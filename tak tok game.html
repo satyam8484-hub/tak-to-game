@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    body {
+        background: #4583c2;
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+    }
+    h1 {
+        color: #333;
+        margin-bottom: 30px;
+        letter-spacing: 2px;
+    }
+    #container {
+        display: grid;
+        grid-template-columns: repeat(3, 70px);
+        grid-template-rows: repeat(3, 70px);
+        gap: 5px;
+        background: #35586d;
+        padding: 20px;
+        border-radius: 10px;
+        border-color: rgb(114, 173, 17);
+    }
+    .button {
+        width: 70px;
+        height: 70px;
+        font-size: 60px;
+        background: #c7dddce8;
+        border: 2px solid #bb18add7;
+        border-radius: 10px;
+        
+    }
+    .button:hover {
+        background: #5b6e66;
+    }
+    #reset {
+        margin-top: 25px;
+        padding: 12px 32px;
+        background: #805630;
+        color: #000000;
+        font-size: 20px;
+        font-weight: bold;
+        border-radius: 8px;
+         box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+        letter-spacing: 2px
+    }
+    #reset:hover {
+        background: #bb2c2c;
+    }
+    /* Center message styling */
+    #message {
+        margin-top: 20px;
+        font-size: 2rem;
+        font-weight: bold;
+        color: #fff;
+        text-align: center;
+        min-height: 40px;
+        letter-spacing: 2px;
+    }
+</style>
+</head>
+<body id="body">
+    <h1>TAK TOK GAME</h1>
+    <div id="container">
+    <button class="button">  </button>    
+    <button class="button"></button>    
+    <button class="button"></button>    
+    <button class="button"></button>    
+    <button class="button"></button>    
+    <button class="button"></button>    
+    <button class="button"></button>    
+    <button class="button"></button>    
+    <button class="button"></button>    
+    </div>
+    <div id="reset">RESET GAME</div>
+    <div id="message"></div>
+    
+</body>
+</html>
+<script>
+// Tak Tok Game JavaScript
+const buttons = document.querySelectorAll('.button');
+const resetBtn = document.getElementById('reset');
+let currentPlayer = '#';
+let gameActive = true;
+const messageDiv = document.getElementById('message');
+function showMessage(msg, color = '#fff') {
+    messageDiv.textContent = msg;
+    messageDiv.style.color = color;
+}
+
+function checkWin() {
+    const winPatterns = [
+        [0,1,2], [3,4,5], [6,7,8], // rows
+        [0,3,6], [1,4,7], [2,5,8], // columns
+        [0,4,8], [2,4,6]           // diagonals
+    ];
+    const values = Array.from(buttons).map(btn => btn.textContent);
+    for (const pattern of winPatterns) {
+        const [a,b,c] = pattern;
+        if (values[a] && values[a] === values[b] && values[a] === values[c]) {
+            return values[a];
+        }
+    }
+    return null;
+}
+
+function handleClick(e) {
+    if (!gameActive) return;
+    if (e.target.textContent) return;
+    e.target.textContent = currentPlayer;
+    const winner = checkWin();
+    if (winner) {
+        gameActive = false;
+        showMessage(winner + ' wins!', winner === '#' ? '#ffeb3b' : '#ff5722');
+        setTimeout(() => {
+            resetGame();
+        }, 1200);
+        return;
+    }
+    // Check for draw
+    if (Array.from(buttons).every(btn => btn.textContent)) {
+        gameActive = false;
+        showMessage('Draw!', '#00e676');
+        setTimeout(() => {
+            resetGame();
+        }, 1200);
+        return;
+    }
+    currentPlayer = currentPlayer === '#' ? '$' : '#';
+}
+
+function resetGame() {
+    buttons.forEach(btn => btn.textContent = '');
+    currentPlayer = '#';
+    gameActive = true;
+    showMessage('');
+}
+
+buttons.forEach(btn => btn.addEventListener('click', handleClick));
+resetBtn.addEventListener('click', resetGame);
+</script>
